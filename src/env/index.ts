@@ -3,7 +3,8 @@ import { z } from 'zod'
 
 // process.env: { NODE_ENV: 'dev', ... }
 
-const envSchema = z.object({ // the loaded environment variable will be an object
+const envSchema = z.object({
+  // the loaded environment variable will be an object
   NODE_ENV: z.enum(['dev', 'test', 'production']).default('dev'),
   PORT: z.coerce.number().default(3333), // we need this variable so that it is possible for external environments to insert this value
 })
