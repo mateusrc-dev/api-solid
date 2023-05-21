@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { UsersRepository } from '@/repositories/users.repository'
 import { hash } from 'bcryptjs'
 interface RegisterUseCaseRequest {
   name: string
@@ -7,16 +7,11 @@ interface RegisterUseCaseRequest {
 }
 export class RegisterUseCase {
   // each class with use case will to unique method
-  constructor(private usersRepository: any) {} // we let's get our dependencies in this 'constructor' how parameter - 'private' is a key word for transform 'usersRepository' in a property in class
+  constructor(private usersRepository: UsersRepository) {} // we let's get our dependencies in this 'constructor' how parameter - 'private' is a key word for transform 'usersRepository' in a property in class
 
   async execute({ name, email, password }: RegisterUseCaseRequest) {
     const password_hash = await hash(password, 6) // 6 rounds
-    const userWithSameEmail = await prisma.user.findUnique({
-      // 'findUnique' find just records uniques or primary keys
-      where: {
-        email,
-      },
-    })
+    const userWithSameEmail = await this.usersRepository.findByEmail(email)
 
     if (userWithSameEmail) {
       throw new Error('E-mail already exist!') // throw error
