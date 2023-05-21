@@ -1,34 +1,30 @@
 import { prisma } from '@/lib/prisma'
-import { PrismaUsersRepository } from '@/repositories/prisma-users-repository'
 import { hash } from 'bcryptjs'
-
 interface RegisterUseCaseRequest {
   name: string
   email: string
   password: string
 }
+export class RegisterUseCase {
+  // each class with use case will to unique method
+  constructor(private usersRepository: any) {} // we let's get our dependencies in this 'constructor' how parameter - 'private' is a key word for transform 'usersRepository' in a property in class
 
-export async function registerUseCase({
-  name,
-  email,
-  password,
-}: RegisterUseCaseRequest) {
-  const password_hash = await hash(password, 6) // 6 rounds
-  const userWithSameEmail = await prisma.user.findUnique({
-    // 'findUnique' find just records uniques or primary keys
-    where: {
+  async execute({ name, email, password }: RegisterUseCaseRequest) {
+    const password_hash = await hash(password, 6) // 6 rounds
+    const userWithSameEmail = await prisma.user.findUnique({
+      // 'findUnique' find just records uniques or primary keys
+      where: {
+        email,
+      },
+    })
+
+    if (userWithSameEmail) {
+      throw new Error('E-mail already exist!') // throw error
+    }
+    await this.usersRepository.create({
       email,
-    },
-  })
-
-  if (userWithSameEmail) {
-    // return reply.status(409).send() // error for when exist data duplicated - we don't can use 'reply' here because we want separate this part of part HTTP of application
-    throw new Error('E-mail already exist!') // throw error
+      name,
+      password_hash,
+    })
   }
-  const prismaUsersRepository = new PrismaUsersRepository()
-  await prismaUsersRepository.create({
-    email,
-    name,
-    password_hash,
-  })
 }
