@@ -23,7 +23,8 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       return reply.status(409).send({ message: err.message }) // error 409 indicate conflict
     }
 
-    return reply.status(500).send()
+    // if it's not a known error...
+    throw err // let's let a higher application layer handle this (the fastify)
   }
 
   return reply.status(201).send()
