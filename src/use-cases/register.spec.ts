@@ -51,7 +51,7 @@ describe('Register Use Case', () => {
       password: '123456',
     })
 
-    expect(() =>
+    await expect(() =>
       registerUseCase.execute({
         // this function is a promise, then the return is success or reject
         name: 'Mateus',
