@@ -1,16 +1,20 @@
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, beforeEach } from 'vitest'
 import { RegisterUseCase } from './register'
 import { compare } from 'bcryptjs'
 import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
-describe('Register Use Case', () => {
-  it('should be able to register', async () => {
-    // const prismaUsersRepository = new PrismaUsersRepository()
-    const usersRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(usersRepository) // here we need the repository that we are going to use - let's put a dummy repository so that this file has no relation to the repository external to this file - this is a test unitary
+let usersRepository: InMemoryUsersRepository
+let sut: RegisterUseCase
 
-    const { user } = await registerUseCase.execute({
+describe('Register Use Case', () => {
+  beforeEach(() => {
+    usersRepository = new InMemoryUsersRepository()
+    sut = new RegisterUseCase(usersRepository) // here we need the repository that we are going to use - let's put a dummy repository so that this file has no relation to the repository external to this file - this is a test unitary
+  }) // function that we can use inside of 'describe' - 'beforeEach' execute before each tests
+
+  it('should be able to register', async () => {
+    const { user } = await sut.execute({
       name: 'Mateus',
       email: 'mateusrc-dev@email.com',
       password: '123456',
@@ -20,11 +24,7 @@ describe('Register Use Case', () => {
   })
 
   it('should hash user password upon registration', async () => {
-    // const prismaUsersRepository = new PrismaUsersRepository()
-    const usersRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(usersRepository) // here we need the repository that we are going to use - let's put a dummy repository so that this file has no relation to the repository external to this file - this is a test unitary
-
-    const { user } = await registerUseCase.execute({
+    const { user } = await sut.execute({
       name: 'Mateus',
       email: 'mateusraimundo1995@email.com',
       password: '123456',
@@ -38,20 +38,16 @@ describe('Register Use Case', () => {
   })
 
   it('should not be able to register with same email twice', async () => {
-    // const prismaUsersRepository = new PrismaUsersRepository()
-    const usersRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(usersRepository) // here we need the repository that we are going to use - let's put a dummy repository so that this file has no relation to the repository external to this file - this is a test unitary
-
     const email = 'mateusrc-dev@email.com'
 
-    await registerUseCase.execute({
+    await sut.execute({
       name: 'Mateus',
       email,
       password: '123456',
     })
 
     await expect(() =>
-      registerUseCase.execute({
+      sut.execute({
         // this function is a promise, then the return is success or reject
         name: 'Mateus',
         email,
