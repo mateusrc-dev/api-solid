@@ -3,25 +3,27 @@ import { InMemoryCheckInsRepository } from '@/repositories/in-memory/in-memory-c
 import { CheckInUseCase } from './check-in'
 import { InMemoryGymsRepository } from '@/repositories/in-memory/in-memory-gyms-repository'
 import { Decimal } from '@prisma/client/runtime/library'
+import { MaxNumberOfCheckInsError } from './errors/max-number-check-ins-error'
+import { MaxDistanceError } from './errors/max-distance-error'
 
 let checkInsRepository: InMemoryCheckInsRepository
 let sut: CheckInUseCase
 let gymsRepository: InMemoryGymsRepository
 
 describe('Check-in Use Case', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     checkInsRepository = new InMemoryCheckInsRepository()
     gymsRepository = new InMemoryGymsRepository()
     sut = new CheckInUseCase(checkInsRepository, gymsRepository) // here we need the repository that we are going to use - let's put a dummy repository so that this file has no relation to the repository external to this file - this is a test unitary
 
-    gymsRepository.items.push({
+    await gymsRepository.create({
       // we need to create this gym so that the tests don't give an error
       id: 'gym-01',
       title: 'JavaScript Gym',
       description: '',
       phone: '',
-      latitude: new Decimal(-5.1136563),
-      longitude: new Decimal(-42.8001405),
+      latitude: -5.1136563,
+      longitude: -42.8001405,
     })
 
     vi.useFakeTimers() // here we are going to create a dummy date data - create 'mocking' before of each tests
@@ -59,7 +61,7 @@ describe('Check-in Use Case', () => {
         userLatitude: -5.1136563,
         userLongitude: -42.8001405,
       }),
-    ).rejects.toBeInstanceOf(Error) // we let's use the error instance global, it works with any error
+    ).rejects.toBeInstanceOf(MaxNumberOfCheckInsError) // we let's use the error instance global, it works with any error
   })
 
   it('should be able to check in twice but in the different day', async () => {
@@ -102,6 +104,6 @@ describe('Check-in Use Case', () => {
         userLatitude: -5.1136563,
         userLongitude: -42.8001405,
       }),
-    ).rejects.toBeInstanceOf(Error)
+    ).rejects.toBeInstanceOf(MaxDistanceError)
   })
 })
