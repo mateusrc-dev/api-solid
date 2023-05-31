@@ -2,6 +2,7 @@ import { CheckIn } from '@prisma/client'
 import { CheckInsRepository } from '@/repositories/check-ins-repository'
 import { GymsRepository } from '@/repositories/gyms-repository'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'
+import { getDistanceBetweenCoordinates } from '@/utils/get-distance-between-coordinates'
 
 interface CheckInUseCaseRequest {
   // types for use case output and input data
@@ -35,6 +36,21 @@ export class CheckInUseCase {
     }
 
     // calculate distance between user and gym
+    const distance = getDistanceBetweenCoordinates(
+      // this function return distance between user and gym in km
+      { latitude: userLatitude, longitude: userLongitude },
+      {
+        latitude: gym.latitude.toNumber(),
+        longitude: gym.longitude.toNumber(),
+      }, // prisma saves information about gym latitude and longitude as a Decimal type, let's turn it into js number
+    )
+
+    const MAX_DISTANCE_IN_KILOMETERS = 0.1
+
+    if (distance > MAX_DISTANCE_IN_KILOMETERS) {
+      // 100m
+      throw Error()
+    }
 
     const checkInOnSameDay = await this.checkInsRepository.findByUserIdOnDate(
       // check if a check-in has already been performed on this day
