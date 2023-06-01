@@ -6,6 +6,16 @@ import dayjs from 'dayjs'
 export class InMemoryCheckInsRepository implements CheckInsRepository {
   public items: CheckIn[] = []
 
+  async findById(id: string) {
+    const checkIn = this.items.find((item) => item.id === id) // 'find' returns undefined if it doesn't find the item with specific id
+
+    if (!checkIn) {
+      return null
+    }
+
+    return checkIn
+  }
+
   async findByUserIdOnDate(userId: string, date: Date) {
     const startOfTheDay = dayjs(date).startOf('date') // here this date to will return with zero hour
     const endOfTheDay = dayjs(date).endOf('date') // returns last valid time of day
@@ -45,6 +55,16 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     }
 
     this.items.push(checkIn)
+    return checkIn
+  }
+
+  async save(checkIn: CheckIn) {
+    const checkInIndex = this.items.findIndex((item) => (item.id = checkIn.id)) // findIndex return -1 if not found the resource - return position of resource in database in memory
+
+    if (checkInIndex >= 0) {
+      this.items[checkInIndex] = checkIn // database updated with checkIn where inside has the value 'validated_at' updated
+    }
+
     return checkIn
   }
 }
