@@ -6,6 +6,7 @@ import { z } from 'zod'
 const envSchema = z.object({
   // the loaded environment variable will be an object
   NODE_ENV: z.enum(['dev', 'test', 'production']).default('dev'),
+  JWT_SECRET: z.string(),
   PORT: z.coerce.number().default(3333), // we need this variable so that it is possible for external environments to insert this value
 })
 

@@ -2,8 +2,14 @@ import fastify from 'fastify'
 import { AppRoutes } from './http/routes'
 import { ZodError } from 'zod'
 import { env } from './env'
+import fastifyJwt from '@fastify/jwt'
 
 export const app = fastify()
+
+app.register(fastifyJwt, {
+  // now new methods jwt will be appended in request and response
+  secret: env.JWT_SECRET, // keyword that will be used to create the token
+})
 
 app.register(AppRoutes) // we let's register a plugin responsibility by routes
 

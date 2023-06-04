@@ -17,7 +17,11 @@ export async function authenticate(
   const authenticateUseCase = makeAuthenticateUseCase()
 
   try {
-    await authenticateUseCase.execute({ email, password })
+    const { user } = await authenticateUseCase.execute({ email, password })
+
+    const token = await reply.jwtSign({}, { sign: { sub: user.id } }) // method to create new token
+
+    return reply.status(200).send({ token }) // 200 = success - 201 is for create resource
   } catch (err) {
     if (err instanceof InvalidCredentialError) {
       return reply.status(400).send({ message: err.message }) // 400 indicate bad request
@@ -26,6 +30,4 @@ export async function authenticate(
     // if it's not a known error...
     throw err // let's let a higher application layer handle this (the fastify)
   }
-
-  return reply.status(200).send() // 200 = success - 201 is for create resource
 }
