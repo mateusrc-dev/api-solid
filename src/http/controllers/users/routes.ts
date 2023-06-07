@@ -1,10 +1,10 @@
 import { FastifyInstance } from 'fastify'
-import { register } from './controllers/register'
-import { authenticate } from './controllers/authenticate'
-import { profile } from './controllers/profile'
-import { verifyJWT } from './middlewares/verify-jwt'
+import { register } from './register'
+import { authenticate } from './authenticate'
+import { profile } from './profile'
+import { verifyJWT } from '@/http/middlewares/verify-jwt'
 
-export async function AppRoutes(app: FastifyInstance) {
+export async function usersRoutes(app: FastifyInstance) {
   app.post('/users', register) // recommend translating routes to entities
 
   app.post('/sessions', authenticate) // post because we let's send data in body
