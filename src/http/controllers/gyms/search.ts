@@ -8,7 +8,7 @@ export async function search(request: FastifyRequest, reply: FastifyReply) {
     page: z.coerce.number().min(1).default(1), // all information sent in 'req.query' are strings, coerce is to convert to number
   })
 
-  const { q, page } = searchGymsQuerySchema.parse(request.body) // parse do a 'throw' automatic of error
+  const { q, page } = searchGymsQuerySchema.parse(request.query) // parse do a 'throw' automatic of error
 
   const searchGymsUseCase = makeSearchGymsUseCase()
 
