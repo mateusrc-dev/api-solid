@@ -2,6 +2,7 @@ import fastify from 'fastify'
 import { ZodError } from 'zod'
 import { env } from './env'
 import fastifyJwt from '@fastify/jwt'
+import fastifyCookie from '@fastify/cookie'
 import { usersRoutes } from './http/controllers/users/routes'
 import { gymsRoutes } from './http/controllers/gyms/routes'
 import { checkIns } from './http/controllers/check-ins/routes'
@@ -11,7 +12,16 @@ export const app = fastify()
 app.register(fastifyJwt, {
   // now new methods jwt will be appended in request and response
   secret: env.JWT_SECRET, // keyword that will be used to create the token
+  cookie: {
+    cookieName: 'refreshToken',
+    signed: false, // has no signature
+  },
+  sign: {
+    expiresIn: '10m',
+  },
 })
+
+app.register(fastifyCookie)
 
 app.register(usersRoutes) // we let's register a plugin responsibility by routes
 app.register(gymsRoutes)
