@@ -1,6 +1,6 @@
 # App
 
-GymPass style app
+GymPass style app - nessa API vamos criar algumas regras de negócio para uma aplicação de academia consumir
 
 ## Definir esses requisitos é o que chamamos de design de software (pensar no software do zero)
 
