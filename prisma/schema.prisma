@@ -7,12 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  MEMBER
+}
+// enum is a list that we can choose from the options
+
 model User {
   // plural name starting with a capital letter
   id            String    @id @default(uuid()) // config of field - 'id' is mandatory in each table - let's use 'uuid' because it's safer since it will be visible in the url
   name          String
   email         String    @unique
   password_hash String
+  role          Role      @default(MEMBER)
   created_at    DateTime  @default(now())
   CheckIns      CheckIn[] // 'CheckIns' is name of relation - dont's is a field in table - relation 1-N
 

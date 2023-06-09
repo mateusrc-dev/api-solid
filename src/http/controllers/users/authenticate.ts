@@ -19,10 +19,13 @@ export async function authenticate(
   try {
     const { user } = await authenticateUseCase.execute({ email, password })
 
-    const token = await reply.jwtSign({}, { sign: { sub: user.id } }) // method to create new token
+    const token = await reply.jwtSign(
+      { role: user.role }, // save role in payload of token
+      { sign: { sub: user.id } },
+    ) // method to create new token - save 'id' of user in token
 
     const refreshToken = await reply.jwtSign(
-      {},
+      { role: user.role },
       { sign: { sub: user.id, expiresIn: '7d' } },
     ) // method to create refresh token - if the user doesn't sign in the app in 7 days then the refresh token won't exist for the user to continue inside the app
 
