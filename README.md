@@ -1,34 +1,58 @@
-# App
+# App created on the NodeJs trail
 
-GymPass style app - nessa API vamos criar algumas regras de negócio super legais para uma aplicação de academia consumir
+### This back-end application created in NodeJs consists of a gym application in which the user can create an account, authenticate, check-in to the nearby gym, search for nearby gyms or by name
 
-## Definir esses requisitos é o que chamamos de design de software (pensar no software do zero)
+### To create the user's proximity features to the gym, we create calculations using the user's location (latitude and longitude) and the gym's location (latitude and longitude) which is stored in the database
 
-# RFs (Requisitos funcionais) - o que o usuário vai poder fazer
+### There is also the possibility for an admin account to create a gym
 
-- [x] Deve ser possível se cadastrar;
-- [x] Deve ser possível se autenticar;
-- [x] Deve ser possível obter o perfil de um usuário logado;
-- [x] Deve ser possível obter o número de check-ins realizados pelo usuário logado;
-- [x] Deve ser possível o usuário obter seu histórico de check-ins;
-- [x] Deve ser possível o usuário buscar academias próximas (até 10km);
-- [x] Deve ser possível o usuário buscar academias pelo nome;
-- [x] Deve ser possível o usuário realizar check-in em uma academia;
-- [x] Deve ser possível validar o check-in de um usuário;
-- [x] Deve ser possível cadastrar uma academia;
+### In this application we define the software design (functional requirements, business rules, non-functional requirements), as seen below:
 
-# RNs (Regras de negócio) - condições para os requisitos funcionais - se... então...
+# RFs (Functional requirements) - what the user will be able to do
 
-- [x] O usuário não deve poder se cadastrar com um e-mail duplicado;
-- [x] O usuário não pode fazer 2 check-ins no mesmo dia;
-- [x] O usuário não pode fazer check-in se não estiver perto (100m) da academia;
-- [x] O check-in só pode ser validado até 20 minutos após criado;
-- [x] O check-in só pode ser validado por administradores;
-- [x] A academia só pode ser cadastrada por administradores;
+- It must be possible to register;
+- It must be possible to authenticate;
+- It must be possible to obtain the profile of a logged in user;
+- It must be possible to obtain the number of check-ins carried out by the logged in user;
+- It must be possible for the user to obtain their check-in history;
+- It must be possible for the user to search for nearby gyms (up to 10km);
+- It must be possible for the user to search for gyms by name;
+- It must be possible for the user to check-in at a gym;
+- It must be possible to validate a user's check-in;
+- It must be possible to register a gym;
 
-## RNFs (Requisitos não funcionais) - requisitos mais técnicos - cliente final não tem controle
+# RNs (Business Rules) - conditions for functional requirements - if... then...
 
-- [x] A senha do usuário precisa estar criptografada;
-- [x] Os dados da aplicação precisam estar persistidos em um bando PostgreSQL;
-- [x] Todas as listas de dados precisam estar paginadas com 20 items por página;
-- [x] O usuário deve ser identificado por um JWT (JSON Web Token);
+- The user must not be able to register with a duplicate email;
+- The user cannot make 2 check-ins on the same day;
+- The user cannot check in if they are not close (100m) to the gym;
+- Check-in can only be validated up to 20 minutes after it is created;
+- Check-in can only be validated by administrators;
+- The gym can only be registered by administrators;
+
+## RNFs (Non-Functional Requirements) - more technical requirements - end customer has no control
+
+- The user's password must be encrypted;
+- Application data must be persisted in a PostgreSQL database;
+- All data lists must be paginated with 20 items per page;
+- The user must be identified by a JWT (JSON Web Token);
+
+### To create all these features we used some libs that were essential:
+
+- fastify/cookie -> we will use a cookie to identify the user who is creating a diet
+- dotenv -> let's use dotenv to read the .env file inside NodeJs
+- fastify -> similar to express → brings traditional part used in building an API (dealing with routes, parameters, headers, responses in JSON, understands requests in JSON)
+- zod -> to validate data as application environment variables, data sent as parameters in routes
+- bcryptjs -> lib to create user password encryption
+- dayjs -> lib to handle dates
+- vitest/coverage-c8 -> shows how much of the repository files have been tested - shows how much the tests are covering the application's functionalities
+- prism -> ORM to deal with the database - make queries
+- supertest -> to create tests for the application’s features
+
+### If you want to test the application on your machine, download the repository and run the command in the repository terminal: 'npm run dev'
+### If you want to test the routes, use insomnia when the application is running (note which port it is running on)
+
+
+
+    
+
